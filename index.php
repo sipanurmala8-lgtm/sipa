@@ -2,18 +2,19 @@
 include 'config.php';
 session_start();
 
-$error = "";
+$error = ""; // Inisialisasi awal agar tidak Undefined
 
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = md5($_POST['password']); // Menggunakan MD5 sesuai permintaan
+    $password = md5($_POST['password']); 
 
     $query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
     $result = mysqli_query($conn, $query);
 
-    if (mysqli_num_rows($result) == 1) {
+    if ($result && mysqli_num_rows($result) == 1) {
         $_SESSION['username'] = $username;
         header("Location: dashboard.php");
+        exit(); // Mencegah kode di bawah tereksekusi
     } else {
         $error = "Username atau password salah!";
     }
@@ -25,59 +26,61 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Full Color</title>
+    <title>Login | Soft Pink</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #fce4ec 0%, #ffe5ec 100%);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: sans-serif;
         }
         .login-card {
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 133, 161, 0.2);
             background: #fff;
-            padding: 2rem;
+            padding: 2.5rem;
             width: 100%;
             max-width: 400px;
         }
         .btn-custom {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            background: #ff85a1;
             border: none;
             color: white;
+            font-weight: bold;
         }
         .btn-custom:hover {
-            opacity: 0.9;
+            background: #ff99ac;
             color: white;
+        }
+        .form-control:focus {
+            border-color: #ff85a1;
+            box-shadow: 0 0 0 0.25rem rgba(255, 133, 161, 0.25);
         }
     </style>
 </head>
 <body>
 
 <div class="login-card">
-    <h3 class="text-center mb-4 fw-bold" style="color: #4e54c8;">Welcome Back</h3>
+    <h3 class="text-center mb-4 fw-bold" style="color: #ff85a1;">Welcome Back</h3>
     
-    <?php if($error): ?>
-        <div class="alert alert-danger text-center"><?php echo $error; ?></div>
+    <?php if(!empty($error)): ?>
+        <div class="alert alert-danger text-center" style="font-size: 0.9rem;"><?php echo $error; ?></div>
     <?php endif; ?>
 
     <form method="POST" action="">
         <div class="mb-3">
             <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" placeholder="Masukkan username" required>
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Password</label>
             <input type="password" name="password" class="form-control" placeholder="********" required>
         </div>
-        <button type="submit" name="login" class="btn btn-custom w-100 py-2 mt-3">Login Sekarang</button>
+        <button type="submit" name="login" class="btn btn-custom w-100 py-2 mt-3 shadow-sm">Login Sekarang</button>
     </form>
-    
-    <div class="text-center mt-3">
-        <small class="text-muted">Lupa password? Hubungi Admin</small>
-    </div>
 </div>
 
 </body>
